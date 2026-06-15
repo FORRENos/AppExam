@@ -2,11 +2,26 @@
 
 WPF-приложение для модулей 2-3 демоэкзамена.
 
-## База данных в SSMS
+## Подключение к БД
 
-Базу лучше назвать `AppExamDb`.
+Приложение подключается к SQL Server LocalDB:
 
-Таблицы:
+```text
+Server=(localdb)\AppExamSQL
+Database=AppExamDb
+```
+
+В SSMS можно подключиться к серверу:
+
+```text
+(localdb)\AppExamSQL
+```
+
+Скрипт для SSMS:
+
+- `AppExamDb.sql` - создает базу, таблицы и начальные данные.
+
+## Таблицы
 
 - `Roles`
 - `Users`
@@ -19,24 +34,22 @@ WPF-приложение для модулей 2-3 демоэкзамена.
 - `Orders`
 - `OrderItems`
 
-Если преподаватель просит ровно 9 таблиц, можно не создавать `Roles`, а хранить роль пользователя в поле `Users.RoleName`. Для нормальной связанной БД лучше оставить `Roles`.
+## Тестовый вход
 
-SQL-скрипт для SSMS лежит в файле `Database.sql`.
+Администратор:
+
+```text
+Логин: 94d5ous@gmail.com
+Пароль: uzWC67
+```
 
 ## Git Bash
 
 ```bash
-git clone https://github.com/FORRENos/AppExam.git
-cd AppExam
+cd "/c/Users/Voron/OneDrive/Документы/экзамен/AppExam"
 git add .
-git commit -m "Add WPF exam application"
-git push origin main
-```
-
-Если основная ветка называется `master`, последняя команда:
-
-```bash
-git push origin master
+git commit -m "Connect WPF app to SQL database"
+git push -u origin main
 ```
 
 Открывать в Visual Studio 2022 нужно файл `AppExam.sln`.

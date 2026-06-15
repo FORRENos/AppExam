@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 
 namespace AppExam.Services;
 
-public sealed class DemoDataStore
+public sealed class DemoDataStore : IDataStore
 {
     public ObservableCollection<Product> Products { get; } = new()
     {
@@ -101,5 +101,23 @@ public sealed class DemoDataStore
     public int GetNextProductId()
     {
         return Products.Count == 0 ? 1 : Products.Max(product => product.Id) + 1;
+    }
+
+    public void LoadProducts()
+    {
+    }
+
+    public void AddProduct(Product product)
+    {
+        Products.Add(product);
+    }
+
+    public void UpdateProduct(Product product)
+    {
+    }
+
+    public void DeleteProduct(Product product)
+    {
+        Products.Remove(product);
     }
 }

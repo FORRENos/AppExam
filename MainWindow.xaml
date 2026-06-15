@@ -115,11 +115,11 @@
                                         <Run Text="{Binding Name}"/>
                                     </TextBlock>
                                     <TextBlock Text="{Binding Description}" TextWrapping="Wrap"/>
-                                    <TextBlock><Run Text="Производитель: "/><Run Text="{Binding ManufacturerName}"/></TextBlock>
-                                    <TextBlock><Run Text="Поставщик: "/><Run Text="{Binding SupplierName}"/></TextBlock>
-                                    <TextBlock><Run Text="Цена: "/><Run Text="{Binding PriceText, Mode=OneWay}"/></TextBlock>
-                                    <TextBlock><Run Text="Единица измерения: "/><Run Text="{Binding UnitName}"/></TextBlock>
-                                    <TextBlock><Run Text="Количество на складе: "/><Run Text="{Binding QuantityInStock}"/></TextBlock>
+                                    <TextBlock Text="{Binding ManufacturerName, StringFormat=Производитель: {0}}"/>
+                                    <TextBlock Text="{Binding SupplierName, StringFormat=Поставщик: {0}}"/>
+                                    <TextBlock Text="{Binding PriceText, StringFormat=Цена: {0}}"/>
+                                    <TextBlock Text="{Binding UnitName, StringFormat=Единица измерения: {0}}"/>
+                                    <TextBlock Text="{Binding QuantityInStock, StringFormat=Количество на складе: {0}}"/>
                                 </StackPanel>
                                 <TextBlock Grid.Column="2" Text="{Binding Discount, StringFormat=Действующая скидка: {0}%}"
                                            TextWrapping="Wrap" FontWeight="Bold" HorizontalAlignment="Center"
