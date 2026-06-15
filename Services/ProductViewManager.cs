@@ -43,6 +43,7 @@ public sealed class ProductViewManager
             return false;
         }
 
+        // Индексы совпадают с порядком пунктов ComboBox в MainWindow.xaml.
         return getDiscountIndex() switch
         {
             1 => product.Discount >= 0 && product.Discount < 13,

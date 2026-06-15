@@ -18,6 +18,7 @@ public sealed class SqlDataStore : IDataStore
         using var connection = new SqlConnection(ConnectionString);
         connection.Open();
 
+        // Товары выводятся вместе со связанными справочниками: категория, поставщик, производитель.
         const string sql = """
             SELECT p.Id, p.Article, p.Name, u.Name AS UnitName, p.Price,
                    s.Name AS SupplierName, m.Name AS ManufacturerName,
@@ -193,7 +194,7 @@ public sealed class SqlDataStore : IDataStore
             name = "Не указано";
         }
 
-        // Имя таблицы выбирается только из кода, поэтому здесь нет пользовательского SQL.
+        // Имя таблицы выбирается только из кода, поэтому пользователь не может подставить свой SQL.
         using var selectCommand = new SqlCommand($"SELECT Id FROM {tableName} WHERE Name = @Name;", connection);
         selectCommand.Parameters.AddWithValue("@Name", name.Trim());
         var existingId = selectCommand.ExecuteScalar();

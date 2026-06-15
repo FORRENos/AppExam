@@ -1,38 +1,54 @@
 # AppExam
 
-WPF-приложение для модулей 2-3 демоэкзамена.
+WPF-приложение на C# для модулей 2-3 демоэкзамена.
 
-## Подключение к БД
+## Что есть в проекте
 
-Приложение подключается к SQL Server LocalDB:
+- авторизация по ролям;
+- гостевой вход;
+- просмотр списка товаров из БД;
+- поиск по товарам;
+- сортировка по цене и остатку;
+- фильтр по размеру скидки;
+- добавление, редактирование и удаление товаров для администратора;
+- подсветка товаров со скидкой больше 25%;
+- подсветка товаров, которых нет на складе.
+
+## Как открыть
+
+Открыть в Visual Studio 2022 файл:
 
 ```text
-Server=(localdb)\AppExamSQL
-Database=AppExamDb
+AppExam.sln
 ```
 
-В SSMS можно подключиться к серверу:
+## База данных
+
+Файл скрипта для SSMS:
+
+```text
+AppExamDb.sql
+```
+
+Скрипт создает:
+
+- базу `AppExamDb`;
+- таблицы;
+- роли;
+- тестовых пользователей;
+- начальные товары.
+
+В SSMS сервер для LocalDB:
 
 ```text
 (localdb)\AppExamSQL
 ```
 
-Скрипт для SSMS:
+В приложении используется строка подключения:
 
-- `AppExamDb.sql` - создает базу, таблицы и начальные данные.
-
-## Таблицы
-
-- `Roles`
-- `Users`
-- `Categories`
-- `Manufacturers`
-- `Suppliers`
-- `Units`
-- `Products`
-- `PickupPoints`
-- `Orders`
-- `OrderItems`
+```text
+Server=(localdb)\AppExamSQL;Database=AppExamDb;Trusted_Connection=True;TrustServerCertificate=True;
+```
 
 ## Тестовый вход
 
@@ -43,13 +59,33 @@ Database=AppExamDb
 Пароль: uzWC67
 ```
 
-## Git Bash
+Менеджер:
 
-```bash
-cd "/c/Users/Voron/OneDrive/Документы/экзамен/AppExam"
-git add .
-git commit -m "Connect WPF app to SQL database"
-git push -u origin main
+```text
+Логин: ptec8ym@yahoo.com
+Пароль: LdNyos
 ```
 
-Открывать в Visual Studio 2022 нужно файл `AppExam.sln`.
+Клиент:
+
+```text
+Логин: wpmrc3do@tutanota.com
+Пароль: RSbvHv
+```
+
+## Основные файлы
+
+- `MainWindow.xaml` - главное окно приложения.
+- `Windows/ProductEditorWindow.xaml` - окно добавления и редактирования товара.
+- `Models/Product.cs` - класс товара.
+- `Models/User.cs` - класс пользователя.
+- `Services/SqlDataStore.cs` - работа с SQL Server.
+- `Services/ProductViewManager.cs` - поиск, фильтрация и сортировка.
+- `Services/ProductFactory.cs` - копирование данных товара при редактировании.
+- `AppExamDb.sql` - скрипт базы данных для SSMS.
+
+## Клонирование
+
+```bash
+git clone https://github.com/FORRENos/AppExam.git
+```

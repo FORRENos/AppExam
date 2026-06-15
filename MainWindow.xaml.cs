@@ -20,6 +20,8 @@ public partial class MainWindow : Window
 
         dataStore = CreateDataStore();
         productsView = CollectionViewSource.GetDefaultView(dataStore.Products);
+
+        // Отдельный класс отвечает за поиск, фильтр и сортировку списка товаров.
         productViewManager = new ProductViewManager(
             productsView,
             () => SearchTextBox.Text,
@@ -82,6 +84,7 @@ public partial class MainWindow : Window
             ? "Гость"
             : $"{user.FullName} ({user.RoleName})";
 
+        // Управление товарами доступно только администратору.
         var canManageProducts = user?.CanManageProducts == true;
         AddProductButton.Visibility = canManageProducts ? Visibility.Visible : Visibility.Collapsed;
         EditProductButton.Visibility = canManageProducts ? Visibility.Visible : Visibility.Collapsed;

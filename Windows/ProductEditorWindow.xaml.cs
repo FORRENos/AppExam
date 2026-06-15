@@ -33,6 +33,7 @@ public partial class ProductEditorWindow : Window
 
     private void SaveButton_Click(object sender, RoutedEventArgs e)
     {
+        // Перед сохранением проверяем обязательные поля и числовые значения.
         if (!ValidateInput(out var price, out var quantity, out var discount))
         {
             return;
@@ -59,6 +60,7 @@ public partial class ProductEditorWindow : Window
         quantity = 0;
         discount = 0;
 
+        // Цена, остаток и скидка не должны принимать отрицательные значения.
         if (string.IsNullOrWhiteSpace(NameTextBox.Text))
         {
             ShowValidationMessage("Заполните наименование товара.");
