@@ -1,0 +1,77 @@
+<Window x:Class="AppExam.Windows.ProductEditorWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Товар" Height="650" Width="620"
+        ResizeMode="NoResize"
+        FontFamily="Comic Sans MS"
+        Background="#FFFFFF">
+    <Window.Resources>
+        <Style TargetType="TextBox">
+            <Setter Property="MinHeight" Value="30"/>
+            <Setter Property="Margin" Value="0,3,0,10"/>
+            <Setter Property="Padding" Value="8,3"/>
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="MinHeight" Value="34"/>
+            <Setter Property="Margin" Value="4"/>
+            <Setter Property="Padding" Value="14,4"/>
+            <Setter Property="Background" Value="#ABCFCE"/>
+            <Setter Property="BorderBrush" Value="#546F94"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="18">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Карточка товара" FontSize="24" FontWeight="Bold" Margin="0,0,0,14"/>
+
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <TextBlock Text="ID товара"/>
+                <TextBox x:Name="IdTextBox" IsReadOnly="True"/>
+
+                <TextBlock Text="Артикул"/>
+                <TextBox x:Name="ArticleTextBox"/>
+
+                <TextBlock Text="Наименование товара"/>
+                <TextBox x:Name="NameTextBox"/>
+
+                <TextBlock Text="Категория товара"/>
+                <TextBox x:Name="CategoryTextBox"/>
+
+                <TextBlock Text="Описание товара"/>
+                <TextBox x:Name="DescriptionTextBox" Height="76" TextWrapping="Wrap" AcceptsReturn="True"/>
+
+                <TextBlock Text="Производитель"/>
+                <TextBox x:Name="ManufacturerTextBox"/>
+
+                <TextBlock Text="Поставщик"/>
+                <TextBox x:Name="SupplierTextBox"/>
+
+                <TextBlock Text="Цена"/>
+                <TextBox x:Name="PriceTextBox"/>
+
+                <TextBlock Text="Единица измерения"/>
+                <TextBox x:Name="UnitTextBox"/>
+
+                <TextBlock Text="Количество на складе"/>
+                <TextBox x:Name="QuantityTextBox"/>
+
+                <TextBlock Text="Действующая скидка"/>
+                <TextBox x:Name="DiscountTextBox"/>
+
+                <TextBlock Text="Фото"/>
+                <TextBox x:Name="PhotoTextBox"/>
+            </StackPanel>
+        </ScrollViewer>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
+            <Button Content="Сохранить" Background="#546F94" Foreground="White" Click="SaveButton_Click"/>
+            <Button Content="Отмена" Click="CancelButton_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>
