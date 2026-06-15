@@ -1,13 +1,25 @@
 using AppExam.Models;
-using Microsoft.Data.SqlClient;
 using System.Collections.ObjectModel;
+using System.Configuration;
+using System.Data.SqlClient;
 
 namespace AppExam.Services;
 
 public sealed class SqlDataStore : IDataStore
 {
-    private const string ConnectionString =
-        @"Server=(localdb)\AppExamSQL;Database=AppExamDb;Trusted_Connection=True;TrustServerCertificate=True;";
+    private static readonly string[] FallbackConnectionStrings =
+    {
+        @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=AppExamDb;Integrated Security=True",
+        @"Data Source=(localdb)\AppExamSQL;Initial Catalog=AppExamDb;Integrated Security=True",
+        @"Data Source=.\SQLEXPRESS;Initial Catalog=AppExamDb;Integrated Security=True"
+    };
+
+    private readonly string connectionString;
+
+    public SqlDataStore()
+    {
+        connectionString = GetWorkingConnectionString();
+    }
 
     public ObservableCollection<Product> Products { get; } = new();
 
@@ -15,11 +27,11 @@ public sealed class SqlDataStore : IDataStore
     {
         Products.Clear();
 
-        using var connection = new SqlConnection(ConnectionString);
+        using var connection = new SqlConnection(connectionString);
         connection.Open();
 
         // Товары выводятся вместе со связанными справочниками: категория, поставщик, производитель.
-        const string sql = """
+        const string sql = @"
             SELECT p.Id, p.Article, p.Name, u.Name AS UnitName, p.Price,
                    s.Name AS SupplierName, m.Name AS ManufacturerName,
                    c.Name AS CategoryName, p.Discount, p.QuantityInStock,
@@ -29,8 +41,7 @@ public sealed class SqlDataStore : IDataStore
             JOIN Suppliers s ON p.SupplierId = s.Id
             JOIN Manufacturers m ON p.ManufacturerId = m.Id
             JOIN Categories c ON p.CategoryId = c.Id
-            ORDER BY p.Id;
-            """;
+            ORDER BY p.Id;";
 
         using var command = new SqlCommand(sql, connection);
         using var reader = command.ExecuteReader();
@@ -57,15 +68,14 @@ public sealed class SqlDataStore : IDataStore
 
     public User? Login(string login, string password)
     {
-        using var connection = new SqlConnection(ConnectionString);
+        using var connection = new SqlConnection(connectionString);
         connection.Open();
 
-        const string sql = """
+        const string sql = @"
             SELECT TOP 1 u.Id, r.Name AS RoleName, u.FullName, u.Login, u.Password
             FROM Users u
             JOIN Roles r ON u.RoleId = r.Id
-            WHERE u.Login = @Login AND u.Password = @Password;
-            """;
+            WHERE u.Login = @Login AND u.Password = @Password;";
 
         using var command = new SqlCommand(sql, connection);
         command.Parameters.AddWithValue("@Login", login.Trim());
@@ -89,7 +99,7 @@ public sealed class SqlDataStore : IDataStore
 
     public int GetNextProductId()
     {
-        using var connection = new SqlConnection(ConnectionString);
+        using var connection = new SqlConnection(connectionString);
         connection.Open();
 
         using var command = new SqlCommand("SELECT ISNULL(MAX(Id), 0) + 1 FROM Products;", connection);
@@ -98,7 +108,7 @@ public sealed class SqlDataStore : IDataStore
 
     public void AddProduct(Product product)
     {
-        using var connection = new SqlConnection(ConnectionString);
+        using var connection = new SqlConnection(connectionString);
         connection.Open();
 
         var unitId = GetOrCreateLookupId(connection, "Units", product.UnitName);
@@ -106,15 +116,14 @@ public sealed class SqlDataStore : IDataStore
         var manufacturerId = GetOrCreateLookupId(connection, "Manufacturers", product.ManufacturerName);
         var categoryId = GetOrCreateLookupId(connection, "Categories", product.CategoryName);
 
-        const string sql = """
+        const string sql = @"
             INSERT INTO Products
                 (Article, Name, UnitId, Price, SupplierId, ManufacturerId, CategoryId,
                  Discount, QuantityInStock, Description, PhotoPath)
             OUTPUT INSERTED.Id
             VALUES
                 (@Article, @Name, @UnitId, @Price, @SupplierId, @ManufacturerId, @CategoryId,
-                 @Discount, @QuantityInStock, @Description, @PhotoPath);
-            """;
+                 @Discount, @QuantityInStock, @Description, @PhotoPath);";
 
         using var command = CreateProductCommand(connection, sql, product, unitId, supplierId, manufacturerId, categoryId);
         product.Id = Convert.ToInt32(command.ExecuteScalar());
@@ -123,7 +132,7 @@ public sealed class SqlDataStore : IDataStore
 
     public void UpdateProduct(Product product)
     {
-        using var connection = new SqlConnection(ConnectionString);
+        using var connection = new SqlConnection(connectionString);
         connection.Open();
 
         var unitId = GetOrCreateLookupId(connection, "Units", product.UnitName);
@@ -131,7 +140,7 @@ public sealed class SqlDataStore : IDataStore
         var manufacturerId = GetOrCreateLookupId(connection, "Manufacturers", product.ManufacturerName);
         var categoryId = GetOrCreateLookupId(connection, "Categories", product.CategoryName);
 
-        const string sql = """
+        const string sql = @"
             UPDATE Products
             SET Article = @Article,
                 Name = @Name,
@@ -144,8 +153,7 @@ public sealed class SqlDataStore : IDataStore
                 QuantityInStock = @QuantityInStock,
                 Description = @Description,
                 PhotoPath = @PhotoPath
-            WHERE Id = @Id;
-            """;
+            WHERE Id = @Id;";
 
         using var command = CreateProductCommand(connection, sql, product, unitId, supplierId, manufacturerId, categoryId);
         command.Parameters.AddWithValue("@Id", product.Id);
@@ -154,13 +162,45 @@ public sealed class SqlDataStore : IDataStore
 
     public void DeleteProduct(Product product)
     {
-        using var connection = new SqlConnection(ConnectionString);
+        using var connection = new SqlConnection(connectionString);
         connection.Open();
 
         using var command = new SqlCommand("DELETE FROM Products WHERE Id = @Id;", connection);
         command.Parameters.AddWithValue("@Id", product.Id);
         command.ExecuteNonQuery();
         Products.Remove(product);
+    }
+
+    private static string GetWorkingConnectionString()
+    {
+        var configured = ConfigurationManager.ConnectionStrings["AppExamDb"]?.ConnectionString ?? "";
+        var candidates = string.IsNullOrWhiteSpace(configured)
+            ? FallbackConnectionStrings
+            : new[] { configured }.Concat(FallbackConnectionStrings).Distinct().ToArray();
+
+        foreach (var candidate in candidates)
+        {
+            if (CanOpenConnection(candidate))
+            {
+                return candidate;
+            }
+        }
+
+        return candidates.First();
+    }
+
+    private static bool CanOpenConnection(string candidate)
+    {
+        try
+        {
+            using var connection = new SqlConnection(candidate);
+            connection.Open();
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
     }
 
     private static SqlCommand CreateProductCommand(

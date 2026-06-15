@@ -2,6 +2,12 @@
 
 WPF-приложение на C# для модулей 2-3 демоэкзамена.
 
+Платформа проекта:
+
+```text
+.NET Framework 4.8
+```
+
 ## Что есть в проекте
 
 - авторизация по ролям;
@@ -38,16 +44,22 @@ AppExamDb.sql
 - тестовых пользователей;
 - начальные товары.
 
-В SSMS сервер для LocalDB:
+Основная строка подключения находится в файле:
 
 ```text
-(localdb)\AppExamSQL
+App.config
 ```
 
-В приложении используется строка подключения:
+По умолчанию используется сервер:
 
 ```text
-Server=(localdb)\AppExamSQL;Database=AppExamDb;Trusted_Connection=True;TrustServerCertificate=True;
+(localdb)\MSSQLLocalDB
+```
+
+Если на компьютере другой сервер SQL Server, поменяйте `Data Source` в `App.config`, например:
+
+```text
+Data Source=.\SQLEXPRESS
 ```
 
 ## Тестовый вход
@@ -82,6 +94,7 @@ Server=(localdb)\AppExamSQL;Database=AppExamDb;Trusted_Connection=True;TrustServ
 - `Services/SqlDataStore.cs` - работа с SQL Server.
 - `Services/ProductViewManager.cs` - поиск, фильтрация и сортировка.
 - `Services/ProductFactory.cs` - копирование данных товара при редактировании.
+- `App.config` - строка подключения к базе данных.
 - `AppExamDb.sql` - скрипт базы данных для SSMS.
 
 ## Клонирование

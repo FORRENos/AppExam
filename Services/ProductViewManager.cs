@@ -76,11 +76,16 @@ public sealed class ProductViewManager
 
     private static bool ContainsText(Product product, string query)
     {
-        return product.Name.Contains(query, StringComparison.OrdinalIgnoreCase)
-            || product.Description.Contains(query, StringComparison.OrdinalIgnoreCase)
-            || product.CategoryName.Contains(query, StringComparison.OrdinalIgnoreCase)
-            || product.SupplierName.Contains(query, StringComparison.OrdinalIgnoreCase)
-            || product.ManufacturerName.Contains(query, StringComparison.OrdinalIgnoreCase)
-            || product.Article.Contains(query, StringComparison.OrdinalIgnoreCase);
+        return ContainsIgnoreCase(product.Name, query)
+            || ContainsIgnoreCase(product.Description, query)
+            || ContainsIgnoreCase(product.CategoryName, query)
+            || ContainsIgnoreCase(product.SupplierName, query)
+            || ContainsIgnoreCase(product.ManufacturerName, query)
+            || ContainsIgnoreCase(product.Article, query);
+    }
+
+    private static bool ContainsIgnoreCase(string source, string query)
+    {
+        return source.IndexOf(query, StringComparison.OrdinalIgnoreCase) >= 0;
     }
 }
