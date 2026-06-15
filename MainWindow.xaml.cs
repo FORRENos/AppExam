@@ -28,7 +28,7 @@ public partial class MainWindow : Window
             () => DiscountComboBox.SelectedIndex,
             () => SortComboBox.SelectedIndex);
 
-        ProductsListView.ItemsSource = productsView;
+        ProductsDataGrid.ItemsSource = productsView;
     }
 
     private static IDataStore CreateDataStore()
@@ -80,7 +80,7 @@ public partial class MainWindow : Window
     private void OpenMainPanel(User? user)
     {
         currentUser = user;
-        CurrentUserTextBlock.Text = user == null
+        UserNameTextBlock.Text = user == null
             ? "Гость"
             : $"{user.FullName} ({user.RoleName})";
 
@@ -117,7 +117,7 @@ public partial class MainWindow : Window
 
     private void EditProductButton_Click(object sender, RoutedEventArgs e)
     {
-        if (ProductsListView.SelectedItem is not Product product)
+        if (ProductsDataGrid.SelectedItem is not Product product)
         {
             MessageBox.Show("Выберите товар для редактирования.", "Информация", MessageBoxButton.OK, MessageBoxImage.Information);
             return;
@@ -135,7 +135,7 @@ public partial class MainWindow : Window
 
     private void DeleteProductButton_Click(object sender, RoutedEventArgs e)
     {
-        if (ProductsListView.SelectedItem is not Product product)
+        if (ProductsDataGrid.SelectedItem is not Product product)
         {
             MessageBox.Show("Выберите товар для удаления.", "Информация", MessageBoxButton.OK, MessageBoxImage.Information);
             return;
