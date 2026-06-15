@@ -117,7 +117,7 @@
                                     <TextBlock Text="{Binding Description}" TextWrapping="Wrap"/>
                                     <TextBlock><Run Text="Производитель: "/><Run Text="{Binding ManufacturerName}"/></TextBlock>
                                     <TextBlock><Run Text="Поставщик: "/><Run Text="{Binding SupplierName}"/></TextBlock>
-                                    <TextBlock><Run Text="Цена: "/><Run Text="{Binding PriceText}"/></TextBlock>
+                                    <TextBlock><Run Text="Цена: "/><Run Text="{Binding PriceText, Mode=OneWay}"/></TextBlock>
                                     <TextBlock><Run Text="Единица измерения: "/><Run Text="{Binding UnitName}"/></TextBlock>
                                     <TextBlock><Run Text="Количество на складе: "/><Run Text="{Binding QuantityInStock}"/></TextBlock>
                                 </StackPanel>
