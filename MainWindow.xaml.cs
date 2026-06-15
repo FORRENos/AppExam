@@ -96,6 +96,11 @@ public partial class MainWindow : Window
 
     private void FilterControl_Changed(object sender, EventArgs e)
     {
+        if (productViewManager == null)
+        {
+            return;
+        }
+
         productViewManager.Refresh();
     }
 
